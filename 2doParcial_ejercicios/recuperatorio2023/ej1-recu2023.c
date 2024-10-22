@@ -100,7 +100,7 @@ void configT0(void) {
 
 }
 
-void configT0(void) { 
+void configT1(void) { 
 
     //configuramos el timer 1 en modo match, para 2 min
     TIM_TIMERCFG_Type timer1;
@@ -149,6 +149,17 @@ void configT2(void) {
     TIM_Cmd(LPC_TIM2, ENABLE);
 
     NVIC_EnableIRQ(TIMER2_IRQn);
+}
+
+void configADC(void) {
+
+    // Configuramos el ADC
+    ADC_Init(LPC_ADC, 1/30); // Frecuencia de muestreo para hacer cada 30s
+    ADC_BurstCmd(LPC_ADC, DISABLE); 
+    ADC_ChannelCmd(LPC_ADC, 0, ENABLE); // Habilitamos el canal 0
+    ADC_StartCmd(LPC_ADC, ADC_START_NOW); // Iniciamos la conversión
+
+
 }
 
 void TIMER0_IRQHandler(void) {
