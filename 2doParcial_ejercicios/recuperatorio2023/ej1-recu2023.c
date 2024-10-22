@@ -5,7 +5,7 @@
 #include "lpc17xx_timer.h"
 
 #define BUFFER_SIZE 4
-#define indice 0
+#define volatile uint8_t indice 0
 
 void configT0(void); //para contar los 30 segundos entre muestras del ADC
 void configT1(void); //para contar los 2 min antes de promediar los valores
@@ -18,7 +18,7 @@ int main(void) {
     configT0();
     configT1();
     configADC();
-    bool voltaje_definido = false;
+    volatile bool voltaje_definido = false;
 
     while (1) {
         //si ya pasaron los 2 minutos, vemos que hacer con el output
@@ -133,7 +133,8 @@ void configT2(void) {
     match2.IntOnMatch = ENABLE; // Que interrumpa para indicar al ADC que debe convertir
     match2.ResetOnMatch = ENABLE; // Que vuelva el TC a cero para volver a contar
     match2.StopOnMatch = ENABLE; // Que no se detenga el timer
-    
+
+    //Periodo de 20K --> 0.00005s la duracion total de la señal    
     uint8_t t_alto_PWM = dutty_promedio * 0.00005 / 100; // Calculamos que tiempo va a estar en alto
     uint8_t t_bajo_PWM = 0.00005 - t_alto_PWM; // Calculamos que tiempo va a estar en bajo
 
