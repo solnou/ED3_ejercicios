@@ -38,8 +38,8 @@ int main(void) {
                 dutty_promedio = 0; //Para que cuando calcule el tiempo en alto, le de 0
             }
 
-
             configT2();
+            voltaje_definido=FALSE;
         }
         
     }
