@@ -1,3 +1,9 @@
+/*
+PRogramar un codigo para que utilizando un timer y un pin de capture se demodule una PWM que ingresa por el pin, 
+calculando el ciclo de trabajo y el periodo. Sacar una tension continua proporcional al ciclo de trabajo por el DAC 
+de rango dinamico 0-2V con un rate de actualizacion de 0,5s del promedio de los ultimos 10 valores de la caputra
+*/
+
 #include "Drivers/src/lpc17xx_timer.c"
 #include "Drivers/src/lpc17xx_pinsel.c"
 #include "Drivers/src/lpc17xx_dac.c"
