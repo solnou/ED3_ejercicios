@@ -92,6 +92,15 @@ void configT0(void) {
 }
 
 void configT2(void) { 
+
+    //Configurar el pin de salida match 2.2
+    PINSEL_CFG_Type pin_config;
+    pin_config.Portnum = 0;
+    pin_config.Pinnum = 8;
+    pin_config.Funcnum = 3;
+    pin_config.Pinmode = 0;
+    PINSEL_ConfigPin(&pin_config);
+    
     // Configuramos el timer 2 en modo match
     TIM_TIMERCFG_Type timer2;
     timer2.PrescaleOption = TIM_PRESCALE_USVAL;
