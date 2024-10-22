@@ -1,6 +1,7 @@
 #include "lpc17xx.h"
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_adc.h"
+#include "lpc17xx_gpio.h"
 #include "lpc17xx_timer.h"
 
 #define BUFFER_SIZE 4
@@ -10,6 +11,7 @@ void configT0(void); //para contar los 30 segundos entre muestras del ADC
 void configT1(void); //para contar los 2 min antes de promediar los valores
 void configT2(void); //para generar el PWM
 void configADC(void);
+void configGPIO(void);
 
 int main(void) {
 
@@ -29,13 +31,13 @@ int main(void) {
                 }
                 else{
                     //Si el voltaje es mayor a 2V ponemos 3.3V por la salida
-                    dutty_promedio = 100; //Para que cuando calcule el tiempo en alto, le de 0.00005
+                    GPIO_SetValue(0,0);
 
                 }
             }
             else{
                 //Si el voltaje es menor a 1 ponemos 0V por la salida
-                dutty_promedio = 0; //Para que cuando calcule el tiempo en alto, le de 0
+                GPIO_ClearValue(0,0);
             }
 
 
@@ -43,6 +45,21 @@ int main(void) {
         }
         
     }
+}
+
+void configGPIO(void){
+
+    // Configuración del pin P0.0 para mostrar la salida
+    PINSEL_CFG_Type pinSenal;
+    pinSenal.Portnum = 0;
+    pinSenal.Pinnum = 0;
+    pinSenal.Funcnum = 0;    
+    PINSEL_ConfigPin(&pinSenal);
+
+    //DEfinir GPIO
+    GPIO_SetDir(0, 0, 1); //PUERTO 0 PIN 0 SALIDA
+    
+
 }
 
 void configT0(void) { 
@@ -92,6 +109,7 @@ void configT0(void) {
 }
 
 void configT2(void) { 
+
     // Configuramos el timer 2 en modo match
     TIM_TIMERCFG_Type timer2;
     timer2.PrescaleOption = TIM_PRESCALE_USVAL;
@@ -108,7 +126,7 @@ void configT2(void) {
 
     // Arranca en alto, el match corresponde hasta que momento debe mantenerse asi
     match2.MatchValue = t_alto_PWM;
-    match2.ExtMatchOutputType = TIM_EXTMATCH_LOW; //Al terminar el tiempo, ponemos en bajo la señal
+    GPIO_SetValue(0, 0);
 
     TIM_Init(LPC_TIM2, TIM_TIMER_MODE, &timer2);
     TIM_ConfigMatch(LPC_TIM2, &match2);
@@ -170,9 +188,11 @@ void TIMER2_IRQHandler(void) {
     if(LPC_TIM2->MR2 == t_alto_PWM){
 
         TIM_UpdateMatchValue(LPC_TIM2, 2, t_bajo_PWM); 
+        GPIO_ClearValue(0, 0);
     }
     else{
         TIM_UpdateMatchValue(LPC_TIM2, 2, t_alto_PWM); 
+        GPIO_SetValue(0, 0);
     }
 
     TIM_Cmd(LPC_TIM2, ENABLE);
