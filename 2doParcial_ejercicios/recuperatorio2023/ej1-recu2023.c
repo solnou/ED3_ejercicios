@@ -27,12 +27,11 @@ int main(void) {
                 if(voltaje<2){
                     //Si el voltaje esta entre 1 y 2V, calculamos cual es el dutty 
 
-                    dutty_promedio = 50 + (voltaje - 1) * 40; // el porcentaje del duty cycle mapiado
+                    dutty_promedio = 50 + (voltaje - 1) * 40; // el porcentaje del duty cycle mapeado
                 }
                 else{
                     //Si el voltaje es mayor a 2V ponemos 3.3V por la salida
                     GPIO_SetValue(0,0);
-
                 }
             }
             else{
@@ -58,7 +57,6 @@ void configGPIO(void){
 
     //DEfinir GPIO
     GPIO_SetDir(0, 0, 1); //PUERTO 0 PIN 0 SALIDA
-    
 
 }
 
