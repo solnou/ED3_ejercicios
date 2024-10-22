@@ -12,7 +12,7 @@ Sin embargo, esta mal configurado porque en el LLI0, no se ha linkeado bien al L
 Se transfieren los datos de dos bloques de memoria, llamados datos_n_global (estan distribuidos en dos lugares de memoria discontinuos) y el destino es el DACR, es decir directamente para convertir.
 El ancho de los datos de LLI es de WORD, es decir se transfieren datos de 32 bits. En el channel el width se ignora ya que solo se tiene en cuenta cuando son transferencias de M2M.
 Ambos LLIs tienen el valor TOTAL_SAMPLES en el campo Control, lo que indica que cada LLI está configurado para transferir TOTAL_SAMPLES elementos. Pareciera que la cantidad de datos que se buscan transferir son TOTAL_SAMPLES * 2.
-Pero, como dijimos anteriormente, la lista LLI0 esta linkeada a si misma, por lo que se van a estar transfiriendo todos los datos de ese bloque de memoria en bucle infinito.
+Pero, como dijimos anteriormente, la lista LLI0 esta linkeada a si misma, por lo que se van a estar transfiriendo todos los datos de ese bloque de memoria en bucle infinito, sin poder determinar cuantas veces se va a transferir los datos de esta unica lista (los datos_1_global).
 
 ### ¿Cómo  se  define  el  tiempo  de  "Interrup DMA  request"   o  el  tiempo  de  transferencia  de c/dato?
 
