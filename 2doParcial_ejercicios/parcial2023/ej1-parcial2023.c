@@ -17,58 +17,60 @@ void configT1(void); //Controla el rate de actualizacion
 
 int main(void){
 
-   configT0();
-   configDAC();
-   configT1();
+    configT0();
+    configDAC();
+    configT1();
 
-    //si el valor actual de captura es mayor a la ultima, significa que hubo un cambio
-   while(LPC_TIM1->CR0 > ultima_captura){ 
+   
+    while(1){ 
+        //si el valor actual de captura es mayor a la ultima, significa que hubo un cambio
+        if(LPC_TIM1->CR0 > ultima_captura){
 
-    if (RE_anterior == 0){
+            if (RE_anterior == 0){
 
-        //Si el anterior es cero (no hubo anterior), es el primer flanco de subida
-        //Al ser el primero, aun no puedo calcular nada
-        RE_anterior = RE_actual;
+                //Si el anterior es cero (no hubo anterior), es el primer flanco de subida
+                //Al ser el primero, aun no puedo calcular nada
+                RE_anterior = RE_actual;
 
-    }
-    else if(RE_anterior != RE_actual){ //si el anterior no es 0 y es distinto al actual, hubo mas de un flanco ascendente
+            }
+            else if(RE_anterior != RE_actual){ //si el anterior no es 0 y es distinto al actual, hubo mas de un flanco ascendente
 
-        //Calculamos el periodo a partir de dos flancos ascendentes consecutivos
-        periodo = RE_actual - RE_anterior;
-        //Actualizamos el valor
-        RE_anterior = RE_actual;
-        
-    }
-    else{ //si hubo un cambio y no fue por RE, fue por FE
-        uint16_t duty_aux = (FE_actual - RE_actual)/periodo * 100;  
-        //Calculamos el ciclo de trabajo, a partir de cuanto tiempo estuvo en alto
-        if(indice_buffer<9){ 
-            duty[indice_buffer] = duty_aux;
-            indice_buffer++; 
+                //Calculamos el periodo a partir de dos flancos ascendentes consecutivos
+                periodo = RE_actual - RE_anterior;
+                //Actualizamos el valor
+                RE_anterior = RE_actual;
+                
+            }
+            else{ //si hubo un cambio y no fue por RE, fue por FE
+                uint16_t duty_aux = (FE_actual - RE_actual)/periodo * 100;  
+                //Calculamos el ciclo de trabajo, a partir de cuanto tiempo estuvo en alto
+                if(indice_buffer<9){ 
+                    duty[indice_buffer] = duty_aux;
+                    indice_buffer++; 
+                }
+                else{
+                    //si ya se lleno el buffer, se reinicia
+                    indice_buffer = 0;
+                    duty[indice_buffer] = duty_aux;
+                    indice_buffer++;
+                }
+
+            }
+
+            //Calculamos un promedio entre los ultimos 10 valores que tuvo el duty
+            uint32_t suma = 0;
+            uint8_t divisor = 0;
+            for(int i = 0; i<10; i++){
+                if(duty[i] != 0){ //para no promediar con los valores que aun no se han llenado
+                    divisor++;
+                }
+                suma += duty[i];
+            }
+            uint32_t promedio = suma/divisor;
         }
-        else{
-            //si ya se lleno el buffer, se reinicia
-            indice_buffer = 0;
-            duty[indice_buffer] = duty_aux;
-            indice_buffer++;
-        }
-
-    }
-
-    //Calculamos un promedio entre los ultimos 10 valores que tuvo el duty
-    uint32_t suma = 0;
-    uint8_t divisor = 0;
-    for(int i = 0; i<10; i++){
-        if(duty[i] != 0){ //para no promediar con los valores que aun no se han llenado
-            divisor++;
-        }
-        suma += duty[i];
-    }
-    uint32_t promedio = suma/divisor;
-
     
     
-   } //Repetimos el bucle 
+    } //Repetimos el bucle 
       
 }
 
