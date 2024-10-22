@@ -8,21 +8,20 @@ de 100 Mhz. El código debe estar debidamente comentado.
 
 #include "lpc17xx.h"
 #include "lpc17xx_adc.h"
-#include "lpc17xx_gpdma.h"
 #include "lpc17xx_timer.h"
 #include "lpc17xx_pinsel.h"
 
 #define destino_canal1 0x10000000
 #define destino_canal2 0x10003FFF
 #define block_size 20
+uint16_t buffer_canal2[block_size];
+uint16_t buffer_canal4[block_size];
 
 void configADC(void);
-void configDMA(void);
 void configT0(void);
 
 int main(void) {
     configADC();
-    configDMA();
     configT0();
     while (1) {
     }
@@ -76,47 +75,42 @@ void configT0(void){
 
 }
 
-void configDMA(void) {
-
-    GPDMA_Init();
-
-    //LLI para ubicar en la primera seccion de memoria, para el canal 2 del ADC
-    GPDMA_LLI_Type LLI;
-    LLI.SrcAddr = (uint32_t) & (LPC_ADC->ADDR2); //obtengo los datos del canal 2 del adc
-    LLI.DstAddr = destino_canal1; //los paso por el canal 1 del dma
-    LLI.NextLLI = &LLI; //se autoenlaza para hacer buffer circular
-    LLI.Control = block_size << 0  //tamaño de transferencia
-                | GPDMA_WIDTH_HALFWORD << 21//ancho del destino
-                | 1 << 26 //incremento del origen
-                | 1 << 27; //incremento del destino
-
-    GPDMA_Channel_CFG_Type canalConfig;
-    canalConfig.ChannelNum = 1;
-    canalConfig.TransferSize = block_size;
-    canalConfig.TransferWidth = GPDMA_WIDTH_HALFWORD; //el adc convierte 12 bits, lo mas cercano  es16
-    canalConfig.DstMemAddr = destino_canal1;
-    canalConfig.TransferType = GPDMA_TRANSFERTYPE_P2M;
-    canalConfig.SrcConn = GPDMA_CONN_ADC;
-    canalConfig.DMALLI = (uint32_t)&LLI;
-    //configuramos el priemr canal
-    GPDMA_Setup(&canalConfig);
-
-    //modifico la estructura para el canal 2 y LLI2, asi uso la misma y no repito tanto codigo
-    LLI.SrcAddr = (uint32_t) & (LPC_ADC->ADDR4); //obtengo los datos del canal4 del adc
-    LLI.DstAddr = destino_canal2; //los paso por el canal 1 del dma
-    canalConfig.ChannelNum = 2; //cambiamos el canal 
-    canalConfig.DstMemAddr = destino_canal2; //cambiamos el destino
-    canalConfig.TransferSize = block_size;
-    //configuramos el segundo 
-    GPDMA_Setup(&canalConfig);
-
-    GPDMA_ChannelCmd(1, ENABLE);
-    GPDMA_ChannelCmd(2, ENABLE);
-}
-
 void TIMER0_IRQHandler(void) {
+
+    //Ante el tiempo de muestreo, reviso el estado de la conversion
+    if (ADC_ChannelGetStatus(LPC_ADC, 2, ADC_DATA_DONE)==SET){
+        //Guardo el valor convertido
+        uint16_t valor = ADC_ChannelGetData(LPC_ADC, 2);
+        if (buffer1_index < block_size){
+            buffer_canal2[buffer2_index] = valor;
+            buffer2_index++;        
+        }
+        else{ //reinicio el buffer circular
+            buffer2_index = 0;
+            buffer_canal2[buffer2_index] = valor;
+            buffer2_index++;
+        }
+
+    }
+    //Reviso el otro canal
+    if (ADC_ChannelGetStatus(LPC_ADC, 4, ADC_DATA_DONE)==SET){
+        //Guardo el valor convertido
+        uint16_t valor = ADC_ChannelGetData(LPC_ADC, 4);
+        if (buffer1_index < block_size){
+            buffer_canal4[buffer4_index] = valor;
+            buffer4_index++;        
+        }
+        else{ //reinicio el buffer circular
+            buffer4_index = 0;
+            buffer_canal2[buffer4_index] = valor;
+            buffer4_index++;
+        }
+
+    }
+
     // Limpiar la interrupción del temporizador
     TIM_ClearIntPending(LPC_TIM0, TIM_MR0_INT);
     // Iniciar la proxima conversión ADC
     ADC_StartCmd(LPC_ADC, ADC_START_NOW);
+
 }
