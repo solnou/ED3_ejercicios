@@ -1,4 +1,4 @@
-## Definir la funcion del bit BIAS del FAC
+## Definir la funcion del bit BIAS del DAC
 
 El BIAS es un bit del registro DACR  para cambiar el rendimiento del conversor. Se lo puede poner en dos modos:
 - `0` : configura al DAC para convertir mas rapido. El consumo de corriente es de 700uA, haciendo que el tiempo de reaccion o setting del DAC sea de 1us, dando una tasa de actualizacion del DAC maxima de 1Mhz
