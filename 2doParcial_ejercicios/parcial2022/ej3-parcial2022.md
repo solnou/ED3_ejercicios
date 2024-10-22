@@ -17,4 +17,7 @@ Pero, como dijimos anteriormente, la lista LLI0 esta linkeada a si misma, por lo
 ### ¿Cómo  se  define  el  tiempo  de  "Interrup DMA  request"   o  el  tiempo  de  transferencia  de c/dato?
 
 El tiempo de interrupcion o de transferencia dependen de la configuracion del DAC, de su tasa de conversion y el CCLK del sistema. No es algo que se configure o se pueda saber solo con este apartado de codigo.
+![image](https://github.com/user-attachments/assets/1aa1c2a6-6014-4f32-84dd-2ece1d06b73d)
+El timeout va en el cntval. Cuando llega a ese punto hace la conversion del DAC. Esto se setea con funciones de cmsis de DAC.
+
 

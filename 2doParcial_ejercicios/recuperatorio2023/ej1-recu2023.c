@@ -40,11 +40,26 @@ int main(void) {
                 GPIO_ClearValue(0,0);
             }
 
-
             configT2();
+            voltaje_definido=FALSE;
         }
         
     }
+}
+
+void configGPIO(void){
+
+    // Configuración del pin P0.0 para mostrar la salida
+    PINSEL_CFG_Type pinSenal;
+    pinSenal.Portnum = 0;
+    pinSenal.Pinnum = 0;
+    pinSenal.Funcnum = 0;    
+    PINSEL_ConfigPin(&pinSenal);
+
+    //DEfinir GPIO
+    GPIO_SetDir(0, 0, 1); //PUERTO 0 PIN 0 SALIDA
+    
+
 }
 
 void configGPIO(void){
