@@ -42,6 +42,12 @@ int main(void){
 
 void configEINT(void){
 
+    PINSEL_CFG_Type pin_cfg; 
+    pin_cfg.Portnum = PINSEL_PORT_2;    
+    pin_cfg.Pinnum = PINSEL_PIN_10;            
+    pin_cfg.Funcnum = PINSEL_FUNC_1;          
+    PINSEL_ConfigPin(&pin_cfg);
+
     //Configurar el pin
     EXTI_InitTypeDef configEINT;
     configEINT.EXTI_Line = EXTI_EINT0;
