@@ -158,7 +158,7 @@ void EINT0_IRQHandler(void){
 }
 
 uint16_t calcular_timeout(uint16_t frecuencia, uint16_t BLOCK_SIZE){
-
-     return time_out = 25000/(BLOCK_SIZE*frecuencia);
+     //update_interval = (CLOCK_DAC_MHZ * 1000000) / (WAVE_FREQUENCY * NUM_SAMPLES);
+     return time_out = (25 * 1000000)/(BLOCK_SIZE*frecuencia);
 
 }
