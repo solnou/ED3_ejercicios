@@ -131,7 +131,7 @@ void configT2(void) {
     // Configuramos el timer 2 en modo match
     TIM_TIMERCFG_Type timer2;
     timer2.PrescaleOption = TIM_PRESCALE_USVAL;
-    timer2.PrescaleValue = 1000000; // Se cuenta cada 1 segundo
+    timer2.PrescaleValue = 1; // Se cuenta cada 1us
 
     TIM_MATCHCFG_Type match2;
     match2.MatchChannel = 2;
