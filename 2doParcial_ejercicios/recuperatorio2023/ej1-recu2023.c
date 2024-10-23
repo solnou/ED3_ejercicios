@@ -19,7 +19,7 @@ hasta el 90%  proporcional al valor de tensión, con un periodo de 20[KHz].
 #define volatile uint8_t indice 0
 
 void configT0(void); //para contar los 30 segundos entre muestras del ADC
-void configT1(void); //para contar los 2 min antes de promediar los valores
+void configT1(void); //para contar los 2 min antes de promediar los valores (!!!!Este podria ser evitado y usar el T0 4 veces para contar los 2 min pero no me aviveeee!!)
 void configT2(void); //para generar el PWM
 void configADC(void);
 void configPIN(void);
