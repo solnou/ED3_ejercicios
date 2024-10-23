@@ -16,7 +16,10 @@ hasta el 90%  proporcional al valor de tensión, con un periodo de 20[KHz].
 #include "lpc17xx_timer.h"
 
 #define BUFFER_SIZE 4
-#define volatile uint8_t indice 0
+uint8_t indice = 0
+bool voltaje_definido = false
+uint8_t voltaje = 0
+uint8_t dutty_promedio = 0
 
 void configT0(void); //para contar los 30 segundos entre muestras del ADC
 void configT1(void); //para contar los 2 min antes de promediar los valores (!!!!Este podria ser evitado y usar el T0 4 veces para contar los 2 min pero no me aviveeee!!)
@@ -29,7 +32,6 @@ int main(void) {
     configT0();
     configT1();
     configADC();
-    volatile bool voltaje_definido = false;
 
     while (1) {
         //si ya pasaron los 2 minutos, vemos que hacer con el output
