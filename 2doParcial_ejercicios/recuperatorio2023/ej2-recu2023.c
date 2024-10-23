@@ -22,6 +22,9 @@ __________________________________________________________________________
 #include "lpc17xx_adc.h"
 
 #define BLOCK_SIZE 1024
+GPDMA_Channel_CFG_Type configDMA
+GPDMA_LLI_Type LLI0
+
 
 void configEINT(void);
 void configDAC(void);
