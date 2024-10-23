@@ -20,6 +20,9 @@ uint8_t indice = 0
 bool voltaje_definido = false
 uint8_t voltaje = 0
 uint8_t dutty_promedio = 0
+uint8_t t_alto_PWM = 0
+uint8_t t_bajo_PWM = 0
+uint16_t buffer_ADC[3] = {0,0,0,0} 
 
 void configT0(void); //para contar los 30 segundos entre muestras del ADC
 void configT1(void); //para contar los 2 min antes de promediar los valores (!!!!Este podria ser evitado y usar el T0 4 veces para contar los 2 min pero no me aviveeee!!)
@@ -142,8 +145,8 @@ void configT2(void) {
     match2.StopOnMatch = ENABLE; // Que no se detenga el timer
 
     //Periodo de 20K --> 0.00005s la duracion total de la señal    
-    uint8_t t_alto_PWM = dutty_promedio * 0.00005 / 100; // Calculamos que tiempo va a estar en alto
-    uint8_t t_bajo_PWM = 0.00005 - t_alto_PWM; // Calculamos que tiempo va a estar en bajo
+    t_alto_PWM = dutty_promedio * 0.00005 / 100; // Calculamos que tiempo va a estar en alto
+    t_bajo_PWM = 0.00005 - t_alto_PWM; // Calculamos que tiempo va a estar en bajo
 
     // Arranca en alto, el match corresponde hasta que momento debe mantenerse asi
     match2.MatchValue = t_alto_PWM;
