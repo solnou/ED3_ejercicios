@@ -22,7 +22,7 @@ void configT0(void); //para contar los 30 segundos entre muestras del ADC
 void configT1(void); //para contar los 2 min antes de promediar los valores
 void configT2(void); //para generar el PWM
 void configADC(void);
-void configGPIO(void);
+void configPIN(void);
 
 int main(void) {
 
@@ -57,7 +57,7 @@ int main(void) {
     }
 }
 
-void configGPIO(void){
+void configPIN(void){
 
     // Configuración del pin P0.0 para mostrar la salida
     PINSEL_CFG_Type pinSenal;
@@ -66,25 +66,19 @@ void configGPIO(void){
     pinSenal.Funcnum = 0;    
     PINSEL_ConfigPin(&pinSenal);
 
-    //DEfinir GPIO
-    GPIO_SetDir(0, 0, 1); //PUERTO 0 PIN 0 SALIDA
-
-}
-
-void configGPIO(void){
-
-    // Configuración del pin P0.0 para mostrar la salida
-    PINSEL_CFG_Type pinSenal;
-    pinSenal.Portnum = 0;
-    pinSenal.Pinnum = 0;
-    pinSenal.Funcnum = 0;    
-    PINSEL_ConfigPin(&pinSenal);
-
-    //DEfinir GPIO
-    GPIO_SetDir(0, 0, 1); //PUERTO 0 PIN 0 SALIDA
+    // Configuración del pin P0.23 para convertir
+    PINSEL_CFG_Type pinADC;
+    pinADC.Portnum = 0;
+    pinADC.Pinnum = 23;
+    pinADC.Funcnum = 1;    
+    PINSEL_ConfigPin(&pinADC);
     
 
+    //DEfinir GPIO
+    GPIO_SetDir(0, 0, 1); //PUERTO 0 PIN 0 SALIDA
+
 }
+
 
 void configT0(void) { 
 
