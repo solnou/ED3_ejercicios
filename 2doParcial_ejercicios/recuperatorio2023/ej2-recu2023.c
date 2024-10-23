@@ -118,7 +118,7 @@ void configDMA(void){
     //configDMA.DMALLI = es particular de cada bloque
 
     GPDMA_Init();
-
+    GPDMA_ChannelCmd(0, ENABLE);
 }
 
 void EINT0_IRQHandler(void){
@@ -132,21 +132,18 @@ void EINT0_IRQHandler(void){
             configDMA.DMALLI = 0; //solo el primer bloque
             DAC_SetDMATimeOut(calcular_timeout(60000, BLOCK_SIZE));
             GPDMA_Setup(&configDMA, &configDMA);
-            GPDMA_ChannelCmd(0, ENABLE);
             break;
         case 2: //Muestra bloque 1
             configDMA.SrcMemAddr = DIRECCION_BLOQUE_1;
             configDMA.DMALLI = 0; //solo el segundo bloque
             DAC_SetDMATimeOut(LPC_DAC, calcular_timeout(120000, BLOCK_SIZE));
             GPDMA_Setup(&configDMA, &configDMA);
-            GPDMA_ChannelCmd(0, ENABLE);
             break;
         case 3: //Muestra el bloque y 2 como una sola señal
             configDMA.SrcMemAddr = DIRECCION_BLOQUE_0;
             configDMA.DMALLI = &LLI0; //muestra dos bloques
             DAC_SetDMATimeOut(LPC_DAC, calcular_timeout(450000, 2*BLOCK_SIZE));
             GPDMA_Setup(&configDMA, &configDMA);
-            GPDMA_ChannelCmd(0, ENABLE);
             contador = 0;
             break;
         
